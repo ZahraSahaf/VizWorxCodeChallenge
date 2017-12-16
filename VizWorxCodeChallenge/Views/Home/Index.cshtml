@@ -1,0 +1,73 @@
+﻿<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+        $('#submitInfo').click(function () {
+            var others = $("#Others").val();
+            var vegetarian = $("#Vegetarian").val();
+            var glutenFree = $("#GlutenFree").val();
+            var nutFree = $("#NutFree").val();
+            var fishFree = $("#FishFree").val();
+            $.ajax({
+                url: '../../api/service/bests',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ Others: others, Vegetarian: vegetarian, GlutenFree: glutenFree, NutFree: nutFree, FishFree: fishFree }),
+                dataType: 'json'
+            }).done(function (value) {
+                value.forEach(item => {
+                    var mainUl = "<ul>" + item["Restaurant"].Name;
+                    var orders = item["ProvidedFoods"];
+                    Object.keys(orders).forEach((key) => {
+                        mainUl += "<li>" + key + " : " + orders[key] + "</li>";
+                    })
+                    mainUl += "</ul>";
+                    $(".contentResult").append(mainUl);
+                })
+            }).fail(function () {
+                alert("No solution found.");
+            });
+
+
+        });
+
+
+    });
+
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="content">
+                <form id="contentBody">
+                    <div class="form-group">
+                        <label for="Others">Others</label>
+                        <input type="number" class="form-control" id="Others" name="Others" value="0" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Vegetarian">Vegetarian</label>
+                        <input type="number" class="form-control" id="Vegetarian" name="Vegetarian" value="0" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Gluten​Free">Gluten​Free</label>
+                        <input type="number" class="form-control" id="GlutenFree" name="GlutenFree" value="0" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Nut​Free">NutFree</label>
+                        <input type="number" class="form-control" id="NutFree" name="NutFree" value="0" />
+                    </div>
+                    <div class="form-group">
+                        <label for="FishFree">FishFree</label>
+                        <input type="number" class="form-control" id="FishFree" name="FishFree" value="0"  />
+                    </div>
+                    <input type="button" class="form-control" id="submitInfo" value="Submit Orders"  />
+                </form>
+
+            </div>
+
+        </div>
+        <div class="col-lg-6">
+                <p class="contentResult" style="word-break:break-word; width:auto">
+
+                </p>
+        </div>
+    </div>
